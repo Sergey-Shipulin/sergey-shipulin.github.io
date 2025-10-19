@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OquMarket - Твой ИИ-наставник в кармане</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .pain-card {
+            transition: all 0.3s ease;
+        }
+        .pain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+        .feature-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .header {
+            transition: all 0.3s ease;
+        }
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header.scrolled .nav-link {
+            color: #4c1d95;
+        }
+        .header.scrolled .logo-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header.scrolled .mobile-btn {
+            color: #4c1d95;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .mobile-menu.open {
+            max-height: 500px;
+        }
+        
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    
+    <!-- Header -->
+    <header class="header fixed w-full top-0 z-50 py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <a href="#" class="flex items-center space-x-2">
+                    <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">O</span>
+                    </div>
+                    <span class="logo-text text-white text-2xl font-bold">OQU<span class="text-yellow-300">Market</span></span>
+                </a>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#solution" class="nav-link text-white hover:text-yellow-300 font-medium">Решение</a>
+                    <a href="#courses" class="nav-link text-white hover:text-yellow-300 font-medium">Курсы</a>
+                    <a href="#results" class="nav-link text-white hover:text-yellow-300 font-medium">Результаты</a>
+                    <a href="#pricing" class="nav-link text-white hover:text-yellow-300 font-medium">Цены</a>
+                    <a href="#contact" class="bg-yellow-300 text-purple-700 px-6 py-2 rounded-lg font-bold hover:bg-yellow-400 transition-all transform hover:scale-105">
+                        Начать
+                    </a>
+                </nav>
+
+                <button id="mobileMenuBtn" class="mobile-btn md:hidden text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="mobileMenu" class="mobile-menu md:hidden mt-4">
+                <nav class="flex flex-col space-y-4 py-4">
+                    <a href="#solution" class="text-white hover:text-yellow-300 font-medium">Решение</a>
+                    <a href="#courses" class="text-white hover:text-yellow-300 font-medium">Курсы</a>
+                    <a href="#results" class="text-white hover:text-yellow-300 font-medium">Результаты</a>
+                    <a href="#pricing" class="text-white hover:text-yellow-300 font-medium">Цены</a>
+                    <a href="#contact" class="bg-yellow-300 text-purple-700 px-6 py-2 rounded-lg font-bold text-center">
+                        Начать
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white min-h-screen flex items-center relative overflow-hidden pt-20">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl"></div>
+            <div class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-4xl mx-auto text-center fade-in-up">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    OQU<span class="text-yellow-300">Market</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-100 leading-relaxed">
+                    Твой ИИ-наставник в кармане. Персонализированное обучение, которое повышает усвоение знаний на <span class="text-yellow-300 font-bold">30%</span>
+                </p>
+                <p class="text-lg md:text-xl mb-12 text-gray-200">
+                    Забудь про скучные уроки - обучение становится лёгким и увлекательным
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#contact" class="bg-white text-purple-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-300 hover:text-purple-700 transition-all transform hover:scale-105 shadow-lg">
+                        Начать обучение
+                    </a>
+                    <a href="#solution" class="border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-purple-600 transition-all">
+                        Узнать больше
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="py-20 bg-gray-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-6 fade-in-up">
+                    Узнаёшь себя? <span class="text-red-400">Ты не один</span>
+                </h2>
+                <p class="text-xl text-center mb-16 text-gray-300 fade-in-up">
+                    Каждый день тысячи студентов сталкиваются с этими проблемами
+                </p>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-red-500 fade-in-up">
+                        <div class="text-5xl mb-4">😰</div>
+                        <h3 class="text-xl font-bold mb-3 text-red-400">Плохое понимание предмета</h3>
+                        <p class="text-gray-300">Материал кажется слишком сложным, преподаватель объясняет непонятно</p>
+                    </div>
+                    
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-orange-500 fade-in-up">
+                        <div class="text-5xl mb-4">😫</div>
+                        <h3 class="text-xl font-bold mb-3 text-orange-400">Перегруженность и стресс</h3>
+                        <p class="text-gray-300">Слишком много заданий, не успеваешь всё сделать, постоянное напряжение</p>
+                    </div>
+                    
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-yellow-500 fade-in-up">
+                        <div class="text-5xl mb-4">📚</div>
+                        <h3 class="text-xl font-bold mb-3 text-yellow-400">Неактуальная информация</h3>
+                        <p class="text-gray-300">Учебники устарели, информация не соответствует современным требованиям</p>
+                    </div>
+                    
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-blue-500 fade-in-up">
+                        <div class="text-5xl mb-4">😴</div>
+                        <h3 class="text-xl font-bold mb-3 text-blue-400">Потеря концентрации</h3>
+                        <p class="text-gray-300">Скучные лекции, невозможно сосредоточиться, мысли разбегаются</p>
+                    </div>
+                    
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-purple-500 fade-in-up">
+                        <div class="text-5xl mb-4">🖥️</div>
+                        <h3 class="text-xl font-bold mb-3 text-purple-400">Долгие часы за ПК</h3>
+                        <p class="text-gray-300">Устают глаза, болит спина, нет энергии продолжать учёбу</p>
+                    </div>
+                    
+                    <div class="pain-card bg-gray-800 p-6 rounded-xl border-2 border-red-600 fade-in-up">
+                        <div class="text-5xl mb-4">📉</div>
+                        <h3 class="text-xl font-bold mb-3 text-red-500">Подготовка без результата</h3>
+                        <p class="text-gray-300">Готовишься к экзаменам, но результаты не приходят, низкие оценки</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 bg-red-900 bg-opacity-30 border-2 border-red-500 rounded-xl p-8 text-center scale-in">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-4 text-red-400">К чему это приводит?</h3>
+                    <div class="grid md:grid-cols-3 gap-6 text-lg">
+                        <div>
+                            <p class="font-semibold mb-2">❌ Неуспеваемость</p>
+                            <p class="text-gray-300 text-sm">Провал на экзаменах, отчисление из учебного заведения</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-2">❌ Потеря мотивации</p>
+                            <p class="text-gray-300 text-sm">Желание бросить учёбу, депрессия, отсутствие целей</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold mb-2">❌ Упущенные возможности</p>
+                            <p class="text-gray-300 text-sm">Потеря времени, денег и шанса на успешную карьеру</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section id="solution" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-6 fade-in-up">
+                    Есть <span class="gradient-text">решение!</span>
+                </h2>
+                <p class="text-xl text-center mb-16 text-gray-600 fade-in-up">
+                    Современные технологии делают обучение понятным, интересным и эффективным
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-12 mb-16">
+                    <div class="bg-gradient-to-br from-purple-50 to-blue-50 p-8 rounded-2xl fade-in-left">
+                        <div class="feature-icon text-5xl mb-4">🤖</div>
+                        <h3 class="text-2xl font-bold mb-4 text-purple-700">Искусственный интеллект</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>ИИ-помощник объясняет материал простыми словами и адаптирует обучение под твой уровень</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>Подбирает оптимальный темп, чтобы избежать перегрузки</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>Формирует индивидуальные курсы из актуальных и обновлённых данных</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-8 rounded-2xl fade-in-right">
+                        <div class="feature-icon text-5xl mb-4">🎮</div>
+                        <h3 class="text-2xl font-bold mb-4 text-orange-700">Геймификация</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>Учёба превращается в игру с квестами на платформе</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>Поддерживается концентрация через короткие уроки</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-500 mr-2 text-xl">✓</span>
+                                <span>Каждый урок - это шаг к следующему уровню знаний</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl p-8 md:p-12 scale-in">
+                    <h3 class="text-3xl font-bold mb-8 text-center">Адаптивные курсы с ИИ</h3>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">⚡</div>
+                            <h4 class="text-xl font-bold mb-3">Короткие модули</h4>
+                            <p class="text-purple-100">Курсы разбиты на небольшие шаги. Каждый модуль даёт результат и поддерживает интерес</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">🎯</div>
+                            <h4 class="text-xl font-bold mb-3">Индивидуальный подход</h4>
+                            <p class="text-purple-100">ИИ анализирует твой прогресс и цели, подбирая актуальные темы и задания</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl mb-4">📊</div>
+                            <h4 class="text-xl font-bold mb-3">Умное отслеживание</h4>
+                            <p class="text-purple-100">Платформа оценивает успехи и предлагает повторить сложные темы</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="courses" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-6 fade-in-up">
+                    Наши <span class="gradient-text">курсы</span>
+                </h2>
+                <p class="text-xl text-center mb-16 text-gray-600 fade-in-up">
+                    Умные, короткие и гибкие - учись где угодно и в своём темпе
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow fade-in-left">
+                        <div class="text-4xl mb-4">💻</div>
+                        <h3 class="text-2xl font-bold mb-4 text-purple-700">Программирование и технологии</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Основы программирования (Python, C++)</li>
+                            <li>• Разработка сайтов (HTML, CSS, JS)</li>
+                            <li>• Веб-приложения (React, Node.js, Django)</li>
+                            <li>• Мобильная разработка (Flutter, Kotlin, Swift)</li>
+                            <li>• Алгоритмы и логика программирования</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl transition-shadow fade-in-right">
+                        <div class="text-4xl mb-4">🌍</div>
+                        <h3 class="text-2xl font-bold mb-4 text-blue-700">Языки и межкультурные навыки</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Языки: от базового до продвинутого уровня</li>
+                            <li>• Подготовка к IELTS, TOEFL</li>
+                            <li>• Практика с носителями языка</li>
+                            <li>• Деловая коммуникация</li>
+                            <li>• Культурные особенности общения</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-2xl p-8 scale-in">
+                    <h3 class="text-2xl font-bold mb-6 text-center">Преимущества наших курсов</h3>
+                    <div class="grid md:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <div class="text-3xl mb-2">⚡</div>
+                            <p class="font-semibold">Быстрое обучение</p>
+                            <p class="text-sm text-green-100">Короткие уроки без лишней воды</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl mb-2">🎯</div>
+                            <p class="font-semibold">Личный маршрут</p>
+                            <p class="text-sm text-green-100">Только нужные темы для тебя</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl mb-2">📈</div>
+                            <p class="font-semibold">Мгновенная обратная связь</p>
+                            <p class="text-sm text-green-100">Сразу видно прогресс</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-16 fade-in-up">
+                    <span class="gradient-text">Результаты</span> которые ты получишь
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="text-center p-6 fade-in-up">
+                        <div class="text-5xl md:text-6xl font-bold gradient-text mb-2">+30%</div>
+                        <p class="text-xl font-semibold text-gray-800 mb-2">Усвоение знаний</p>
+                        <p class="text-gray-600">Персонализированное обучение работает</p>
+                    </div>
+                    <div class="text-center p-6 fade-in-up">
+                        <div class="text-5xl md:text-6xl font-bold gradient-text mb-2">100%</div>
+                        <p class="text-xl font-semibold text-gray-800 mb-2">Актуальность</p>
+                        <p class="text-gray-600">Только современные данные и методики</p>
+                    </div>
+                    <div class="text-center p-6 fade-in-up">
+                        <div class="text-5xl md:text-6xl font-bold gradient-text mb-2">24/7</div>
+                        <p class="text-xl font-semibold text-gray-800 mb-2">Доступность</p>
+                        <p class="text-gray-600">Учись когда и где удобно</p>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 md:p-12 scale-in">
+                    <h3 class="text-2xl md:text-3xl font-bold mb-6 text-center text-gray-800">Что изменится в твоей жизни?</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="flex items-start space-x-3">
+                            <div class="text-2xl">✨</div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Понятное обучение</h4>
+                                <p class="text-gray-600">ИИ помогает разобраться в сложных темах простыми словами</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="text-2xl">🎮</div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Увлекательный процесс</h4>
+                                <p class="text-gray-600">Геймификация делает учёбу интересной игрой</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="text-2xl">🚀</div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Быстрое усвоение</h4>
+                                <p class="text-gray-600">Интерактивные курсы ускоряют процесс обучения</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="text-2xl">🎯</div>
+                            <div>
+                                <h4 class="font-bold text-lg mb-1">Индивидуальный путь</h4>
+                                <p class="text-gray-600">Система подстраивается под твой уровень и темп</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-gray-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 fade-in-up">
+                    Начни обучение <span class="text-yellow-300">сегодня</span>
+                </h2>
+                <p class="text-xl mb-12 text-gray-300 fade-in-up">
+                    Инвестируй в своё будущее с OquMarket
+                </p>
+
+                <div class="bg-gradient-to-br from-purple-600 to-blue-600 rounded-2xl p-8 md:p-12 max-w-md mx-auto shadow-2xl transform hover:scale-105 transition-transform scale-in">
+                    <div class="text-yellow-300 text-sm font-bold uppercase tracking-wide mb-4">Специальное предложение</div>
+                    <div class="text-5xl md:text-6xl font-bold mb-2">5 000 ₸</div>
+                    <div class="text-xl text-purple-200 mb-8">за месяц подписки</div>
+                    
+                    <ul class="text-left space-y-3 mb-8">
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3 text-xl">✓</span>
+                            <span>Безлимитный доступ ко всем курсам</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3 text-xl">✓</span>
+                            <span>ИИ-помощник 24/7</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3 text-xl">✓</span>
+                            <span>Персональный план обучения</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3 text-xl">✓</span>
+                            <span>Геймификация и награды</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="text-yellow-300 mr-3 text-xl">✓</span>
+                            <span>Отслеживание прогресса</span>
+                        </li>
+                    </ul>
+
+                    <a href="#contact" class="block bg-yellow-300 text-purple-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-yellow-400 transition-all transform hover:scale-105">
+                        Оформить подписку
+                    </a>
+                </div>
+
+                <p class="mt-8 text-gray-400 fade-in-up">
+                    Уже продано 4 подписки в этом месяце. Не упусти свой шанс!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-6 fade-in-up">
+                    Начни своё <span class="gradient-text">преображение</span>
+                </h2>
+                <p class="text-xl text-center mb-12 text-gray-600 fade-in-up">
+                    Оставь заявку и мы свяжемся с тобой в течение часа
+                </p>
+
+                <form id="contactForm" class="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-8 md:p-12 shadow-xl scale-in">
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Твоё имя *</label>
+                            <input type="text" name="name" required class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:outline-none transition-colors" placeholder="Введи своё имя">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Телефон *</label>
+                            <input type="tel" name="phone" required class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:outline-none transition-colors" placeholder="+7 (___) ___-__-__">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                        <input type="email" name="email" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:outline-none transition-colors" placeholder="your@email.com">
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Что тебя интересует?</label>
+                        <select name="interest" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:outline-none transition-colors">
+                            <option value="">Выбери направление</option>
+                            <option value="programming">Программирование</option>
+                            <option value="languages">Изучение языков</option>
+                            <option value="all">Все курсы</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-semibold mb-2">Расскажи о своих целях</label>
+                        <textarea name="message" rows="4" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:outline-none transition-colors" placeholder="Что ты хочешь изучить? Какие цели хочешь достичь?"></textarea>
+                    </div>
+
+                    <div id="formMessage" class="mb-4 p-4 rounded-lg hidden"></div>
+
+                    <button type="submit" class="w-full gradient-bg text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
+                        Отправить заявку
+                    </button>
+
+                    <p class="text-center text-gray-600 mt-4 text-sm">
+                        Нажимая кнопку, ты соглашаешься с политикой конфиденциальности
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">
+                            <span class="gradient-text">OQU</span><span class="text-yellow-300">Market</span>
+                        </h3>
+                        <p class="text-gray-400">Современное образование с искусственным интеллектом</p>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold mb-4 text-lg">Контакты</h4>
+                        <ul class="space-y-2 text-gray-400">
+                            <li class="flex items-center">
+                                <span class="mr-2">📞</span>
+                                <a href="tel:+77076634540" class="hover:text-yellow-300 transition-colors">+7 707 663 45 40</a>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="mr-2">📞</span>
+                                <a href="tel:+77476401855" class="hover:text-yellow-300 transition-colors">+7 747 640 18 55</a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold mb-4 text-lg">Навигация</h4>
+                        <ul class="space-y-2 text-gray-400">
+                            <li><a href="#solution" class="hover:text-yellow-300 transition-colors">Решение</a></li>
+                            <li><a href="#courses" class="hover:text-yellow-300 transition-colors">Курсы</a></li>
+                            <li><a href="#results" class="hover:text-yellow-300 transition-colors">Результаты</a></li>
+                            <li><a href="#pricing" class="hover:text-yellow-300 transition-colors">Цены</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 pt-8 text-center text-gray-400">
+                    <p>&copy; 2024 OquMarket. Все права защищены.</p>
+                    <p class="mt-2 text-sm">Объединяя искусственный интеллект, чат-помощник и игровые механики в одном цифровом пространстве</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in-up, .fade-in-left, .fade-in-right, .scale-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Form submission
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData);
+            
+            // Show success message
+            formMessage.className = 'mb-4 p-4 rounded-lg bg-green-100 border-2 border-green-500 text-green-700';
+            formMessage.textContent = '✓ Спасибо! Мы получили твою заявку и свяжемся с тобой в ближайшее время.';
+            formMessage.classList.remove('hidden');
+            
+            // Reset form
+            contactForm.reset();
+            
+            // Hide message after 5 seconds
+            setTimeout(() => {
+                formMessage.classList.add('hidden');
+            }, 5000);
+            
+            // Log data (in production, send to backend)
+            console.log('Form submitted:', data);
+        });
+    </script>
+
+</body>
+</html>
